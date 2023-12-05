@@ -2,7 +2,9 @@ package com.spirngboot.blog.Spring.controller;
 
 
 import com.spirngboot.blog.Spring.Payload.PostDto;
+import com.spirngboot.blog.Spring.Payload.PostResponse;
 import com.spirngboot.blog.Spring.service.PostService;
+import com.spirngboot.blog.Spring.utils.AppConstants;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -31,8 +33,14 @@ public class PostController {
 
     // Get all posts
     @GetMapping
-    public List<PostDto> getAllPosts() {
-        return postService.getAllPosts();
+    public PostResponse getAllPosts(
+            @RequestParam(value = "pageNo", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER, required = false) int pageNo,
+            @RequestParam(value = "pageSize", defaultValue = AppConstants.DEFAULT_PAGE_SIZE, required = false) int pageSize,
+            @RequestParam(value = "sortBy", defaultValue = AppConstants.DEFAULT_SORT_BY, required = false) String sortBy,
+            @RequestParam(value = "sortDir", defaultValue = AppConstants.DEFAULT_SORT_DIRECTION, required = false) String sortDir
+    ) {
+
+        return postService.getAllPosts(pageNo, pageSize, sortBy, sortDir);
     }
 
     // Get postById
@@ -52,6 +60,6 @@ public class PostController {
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deletePost(@PathVariable(name = "id") long id) {
         postService.postDeleteById(id);
-        return new ResponseEntity<>("Post entity deleted successfuly", HttpStatus.OK);
+        return new ResponseEntity<>("Post entity deleted successfully", HttpStatus.OK);
     }
 }
