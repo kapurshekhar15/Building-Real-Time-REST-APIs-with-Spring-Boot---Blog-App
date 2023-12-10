@@ -6,6 +6,7 @@ import com.spirngboot.blog.Spring.entity.Post;
 import com.spirngboot.blog.Spring.exception.ResourceNotFoundException;
 import com.spirngboot.blog.Spring.repository.PostRespository;
 import com.spirngboot.blog.Spring.service.PostService;
+import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -20,9 +21,12 @@ public class PostServiceImpl implements PostService {
 
     private PostRespository postRespository;
 
+    private ModelMapper mapper;
+
     // using contructor injection
-    public PostServiceImpl(PostRespository postRespository) {
+    public PostServiceImpl(PostRespository postRespository, ModelMapper mapper) {
         this.postRespository = postRespository;
+        this.mapper = mapper;
     }
 
     @Override
@@ -93,25 +97,29 @@ public class PostServiceImpl implements PostService {
     }
 
 
-    // converting entity to DTO
+    // converting entity to DTO ---> using modelmapper to map one type to other type....!!!
     private PostDto mapToDto(Post post) {
-        PostDto postDto = new PostDto();
-        postDto.setId(post.getId());
-        postDto.setTitle(post.getTitle());
-        postDto.setDescription(post.getDescription());
-        postDto.setContent(post.getContent());
+        PostDto postDto = mapper.map(post, PostDto.class);
+
+
+//        postDto.setId(post.getId());
+//        postDto.setTitle(post.getTitle());
+//        postDto.setDescription(post.getDescription());
+//        postDto.setContent(post.getContent());
 
         return postDto;
     }
 
 
-    // converting DTO to entity
+    // converting DTO to entity ---> using modelmapper to map one type to other type....!!!
     private Post mapToEntity(PostDto postDto) {
 
-        Post post = new Post();
-        post.setTitle(postDto.getTitle());
-        post.setDescription(postDto.getDescription());
-        post.setContent(postDto.getContent());
+        Post post = mapper.map(postDto, Post.class);
+
+
+//        post.setTitle(postDto.getTitle());
+//        post.setDescription(postDto.getDescription());
+//        post.setContent(postDto.getContent());
 
         return post;
     }
