@@ -1,7 +1,9 @@
 package com.spirngboot.blog.Spring.controller;
 
-import com.spirngboot.blog.Spring.Payload.LonginDto;
+import com.spirngboot.blog.Spring.Payload.LoginDto;
+import com.spirngboot.blog.Spring.Payload.RegisterDto;
 import com.spirngboot.blog.Spring.service.AuthService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,12 +20,19 @@ public class AuthController {
         this.authService = authService;
     }
 
-    // Buil Login REST API or Sign API
-    @PostMapping(value = {"/login", "/singin"}) // here client can user both either singin or login
-    public ResponseEntity<String> login(@RequestBody LonginDto longinDto) {
-        String response = authService.login(longinDto);
+    // Build Login REST API
+    @PostMapping(value = {"/login", "signin"})
+    public ResponseEntity<String> login(@RequestBody LoginDto loginDto) {
+        String response = authService.login(loginDto);
         return ResponseEntity.ok(response);
     }
 
 
+    // Build REgister REST API
+
+    @PostMapping(value = {"/register", "/signup"})
+    public ResponseEntity<String> register(@RequestBody RegisterDto registerDto) {
+        String reponse = authService.register(registerDto);
+        return new ResponseEntity<>(reponse, HttpStatus.CREATED);
+    }
 }

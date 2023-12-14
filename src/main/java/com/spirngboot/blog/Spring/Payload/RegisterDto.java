@@ -7,9 +7,12 @@ import lombok.Setter;
 
 @Setter
 @Getter
-@NoArgsConstructor
 @AllArgsConstructor
-public class LonginDto {
-    private String usernameOrEmail;
+@NoArgsConstructor
+public class RegisterDto {
+
+    private String name;
+    private String username;
+    private String email;
     private String password;
 }
