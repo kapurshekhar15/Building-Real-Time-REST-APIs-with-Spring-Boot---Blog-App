@@ -2,6 +2,7 @@ package com.spirngboot.blog.Spring.service.impl;
 
 import com.spirngboot.blog.Spring.Payload.LoginDto;
 import com.spirngboot.blog.Spring.Payload.RegisterDto;
+import com.spirngboot.blog.Spring.Security.JwtTokenProvider;
 import com.spirngboot.blog.Spring.entity.Role;
 import com.spirngboot.blog.Spring.entity.User;
 import com.spirngboot.blog.Spring.exception.BlogAPIException;
@@ -27,14 +28,18 @@ public class AuthServiceImpl implements AuthService {
     private RoleRepository roleRepository;
     private PasswordEncoder passwordEncoder;
 
+    private JwtTokenProvider jwtTokenProvider;
+
     public AuthServiceImpl(AuthenticationManager authenticationManager,
                            UserRepository userRepository,
                            RoleRepository roleRepository,
-                           PasswordEncoder passwordEncoder) {
+                           PasswordEncoder passwordEncoder,
+                           JwtTokenProvider jwtTokenProvider) {
         this.authenticationManager = authenticationManager;
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
+        this.jwtTokenProvider = jwtTokenProvider;
     }
 
     @Override
@@ -42,7 +47,8 @@ public class AuthServiceImpl implements AuthService {
 
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginDto.getUsernameOrEmail(), loginDto.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        return "user logged in successfully";
+        String token = jwtTokenProvider.generateToken(authentication);
+        return token;
     }
 
     @Override

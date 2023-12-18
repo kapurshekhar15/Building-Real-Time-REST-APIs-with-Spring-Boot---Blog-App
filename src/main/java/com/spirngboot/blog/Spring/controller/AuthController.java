@@ -1,5 +1,6 @@
 package com.spirngboot.blog.Spring.controller;
 
+import com.spirngboot.blog.Spring.Payload.JWTAuthResponse;
 import com.spirngboot.blog.Spring.Payload.LoginDto;
 import com.spirngboot.blog.Spring.Payload.RegisterDto;
 import com.spirngboot.blog.Spring.service.AuthService;
@@ -22,9 +23,13 @@ public class AuthController {
 
     // Build Login REST API
     @PostMapping(value = {"/login", "signin"})
-    public ResponseEntity<String> login(@RequestBody LoginDto loginDto) {
-        String response = authService.login(loginDto);
-        return ResponseEntity.ok(response);
+    public ResponseEntity<JWTAuthResponse> login(@RequestBody LoginDto loginDto) {
+        String token = authService.login(loginDto);
+
+        JWTAuthResponse jwtAuthResponse = new JWTAuthResponse();
+
+        jwtAuthResponse.setAccessToken(token);
+        return ResponseEntity.ok(jwtAuthResponse);
     }
 
 
