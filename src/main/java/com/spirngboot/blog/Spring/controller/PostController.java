@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/posts")
+@RequestMapping()
 @Tag(
         name = "CRUD REST APIs for Post Resource"
 )
@@ -45,7 +45,7 @@ public class PostController {
             name = "Bear Authentication"
     )
     @PreAuthorize("hasRole('ADMIN')")
-    @PostMapping
+    @PostMapping("/api/v1/posts")
     public ResponseEntity<PostDto> cratePost(@Valid @RequestBody PostDto postDto) {
 
         return new ResponseEntity<>(postService.createPost(postDto), HttpStatus.CREATED);
@@ -61,7 +61,7 @@ public class PostController {
             responseCode = "200",
             description = "Http Status 200 SUCCESS"
     )
-    @GetMapping
+    @GetMapping("/api/v1/posts")
     public PostResponse getAllPosts(
             @RequestParam(value = "pageNo", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER, required = false) int pageNo,
             @RequestParam(value = "pageSize", defaultValue = AppConstants.DEFAULT_PAGE_SIZE, required = false) int pageSize,
@@ -81,8 +81,11 @@ public class PostController {
             responseCode = "200",
             description = "Http Status 200 SUCCESS"
     )
-    @GetMapping("/{id}")
-    public ResponseEntity<PostDto> getPostById(@PathVariable(name = "id") Long id) {
+    //  @GetMapping(value = "/api/posts/{id}", params = "version=1") --> Versioning through Query parameters
+    //  @GetMapping(value = "/api/posts/{id}", headers = "X-API-VERSION=1") --> Versioning through custom headers
+//    @GetMapping(value = "/api/posts/{id}", produces = "application/vnd.javaguides.v1+json") ---> Versioning through content negotition
+    @GetMapping(value = "/api/v1/posts/{id}")
+    public ResponseEntity<PostDto> getPostByIdV1(@PathVariable(name = "id") Long id) {
         return ResponseEntity.ok(postService.getPostById(id));
     }
 
@@ -99,7 +102,7 @@ public class PostController {
             name = "Bear Authentication"
     )
     @PreAuthorize("hasRole('ADMIN')")
-    @PutMapping("/{id}")
+    @PutMapping("/api/v1/posts/{id}")
     public ResponseEntity<PostDto> updatePost(@Valid @RequestBody PostDto postDto, @PathVariable(name = "id") long id) {
         PostDto postResponse = postService.updatePost(postDto, id);
         return new ResponseEntity<>(postResponse, HttpStatus.OK);
@@ -118,7 +121,7 @@ public class PostController {
             name = "Bear Authentication"
     )
     @PreAuthorize("hasRole('ADMIN')")
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/api/v1/posts/{id}")
     public ResponseEntity<String> deletePost(@PathVariable(name = "id") long id) {
         postService.postDeleteById(id);
         return new ResponseEntity<>("Post entity deleted successfully", HttpStatus.OK);
@@ -126,7 +129,7 @@ public class PostController {
 
 
     // Build Get Posts by category REST api
-    @GetMapping("/category/{id}")
+    @GetMapping("/api/v1/posts/category/{id}")
     public ResponseEntity<List<PostDto>> getPostByCategory(@PathVariable("id") Long categoryId) {
 
         List<PostDto> postDtos = postService.getPostByCategory(categoryId);
